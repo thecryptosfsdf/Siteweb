@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lecteur Vidéo</title>
+  <title>Galerie Vidéos</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,8 +15,8 @@
       min-height: 100vh;
       background: radial-gradient(circle at top, #1a1a1a, #000 70%);
       color: #fff;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
@@ -28,17 +28,23 @@
     }
 
     main {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 20px;
-      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
-    .buttons {
+    /* Moitié gauche pour les boutons */
+    .buttons-container {
+      width: 50%;
+      padding: 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       gap: 12px;
-      align-content: start;
+      overflow-y: auto;
+      background: #111;
     }
 
     button {
@@ -58,20 +64,20 @@
       background: linear-gradient(145deg, #2a2a2a, #141414);
     }
 
-    .player {
+    /* Moitié droite pour prévisualisation vidéo */
+    .preview-container {
+      width: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #000;
-      border-radius: 20px;
-      border: 1px solid #222;
-      padding: 10px;
+      overflow: hidden;
     }
 
-    video {
-      width: 100%;
-      max-height: 75vh;
-      border-radius: 14px;
+    .preview-video {
+      max-width: 95%;
+      max-height: 95%;
+      border-radius: 12px;
       background: #000;
     }
 
@@ -82,33 +88,49 @@
       opacity: 0.6;
     }
 
+    /* Overlay plein écran pour vidéo */
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      cursor: zoom-out;
+    }
+
+    .fullscreen-overlay video {
+      max-width: 95%;
+      max-height: 95%;
+    }
+
     @media (max-width: 900px) {
       main {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
+      .buttons-container, .preview-container {
+        width: 100%;
+        height: 50vh;
       }
     }
   </style>
 </head>
 <body>
-  <header>🎬 Lecteur vidéo local</header>
+  <header>🎬 Galerie Vidéos locale</header>
 
   <main>
-    <section class="buttons">
-      <button onclick="playVideo('videos/video1.mp4')">Vidéo 1</button>
-      <button onclick="playVideo('video2.mp4')">Jean HOT</button>
-      <button onclick="playVideo('videos/video3.mp4')"></button>
-      <button onclick="playVideo('videos/video4.mp4')">Vidéo 4</button>
-      <button onclick="playVideo('videos/video5.mp4')">Vidéo 5</button>
-      <button onclick="playVideo('videos/video6.mp4')">Vidéo 6</button>
-<a href="photo.html">
-  <button>Ouvrir une autre page</button>
-</a>
+    <!-- Moitié gauche : boutons -->
+    <section class="buttons-container" id="buttonsContainer">
+      <!-- Les boutons seront générés automatiquement -->
     </section>
 
-    <section class="player">
-      <video id="videoPlayer" controls autoplay>
-        Votre navigateur ne supporte pas la vidéo HTML5.
-      </video>
+    <!-- Moitié droite : prévisualisation vidéo -->
+    <section class="preview-container">
+      <video class="preview-video" id="previewVideo" muted autoplay loop></video>
     </section>
   </main>
 
@@ -117,12 +139,40 @@
   </footer>
 
   <script>
-    const videoPlayer = document.getElementById('videoPlayer');
+    const buttonsContainer = document.getElementById('buttonsContainer');
+    const previewVideo = document.getElementById('previewVideo');
 
-    function playVideo(src) {
-      videoPlayer.src = src;
-      videoPlayer.load();
-      videoPlayer.play();
+    // Générer automatiquement les 75 boutons (1.mp4 à 75.mp4)
+    for (let i = 1; i <= 75; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+
+      // Prévisualisation au survol
+      btn.addEventListener('mouseenter', () => {
+        previewVideo.src = `${i}.mp4`;
+        previewVideo.play();
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        previewVideo.pause();
+        previewVideo.src = '';
+      });
+
+      // Plein écran au clic
+      btn.onclick = () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'fullscreen-overlay';
+        const fullVideo = document.createElement('video');
+        fullVideo.src = `${i}.mp4`;
+        fullVideo.controls = true;
+        fullVideo.autoplay = true;
+        overlay.appendChild(fullVideo);
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', () => overlay.remove());
+      };
+
+      buttonsContainer.appendChild(btn);
     }
   </script>
 </body>
