@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page protégée</title>
+  <script>
+    const mdp = prompt("Mot de passe ?");
+    if (mdp !== "21154") {
+      alert("Mot de passe incorrect");
+      window.location.href = "https://google.com";
+    }
+  </script>
+  <title>Galerie Vidéos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1a1a1a, #000 70%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      opacity: 0.9;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Boutons (moitié gauche) */
+    .buttons-container {
+      width: 50%;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      overflow-y: auto;
+      background: #111;
+    }
+
+    button {
+      background: linear-gradient(145deg, #222, #111);
+      border: 1px solid #333;
+      border-radius: 14px;
+      color: #fff;
+      padding: 14px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-align: center;
+      transition: 0.15s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    /* Aperçu vidéo (moitié droite) */
+    .preview-container {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    .preview-video {
+      max-width: 95%;
+      max-height: 95%;
+      border-radius: 12px;
+    }
+
+    /* Plein écran */
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .fullscreen-overlay video {
+      max-width: 95%;
+      max-height: 95%;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        flex-direction: column;
+      }
+      .buttons-container,
+      .preview-container {
+        width: 100%;
+        height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>🎬 Galerie vidéos locale</header>
+
+<main>
+  <section class="buttons-container" id="buttonsContainer"></section>
+
+  <section class="preview-container">
+    <video id="previewVideo" class="preview-video" muted autoplay loop></video>
+  </section>
+</main>
+
+<script>
+  const buttonsContainer = document.getElementById('buttonsContainer');
+  const previewVideo = document.getElementById('previewVideo');
+
+  const videoNames = [
+    "citebeur extra",
+    "militaire baise",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "*",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+    "rien",
+  ];
+
+  const totalVideos = 75;
+
+  for (let i = 1; i <= totalVideos; i++) {
+    const btn = document.createElement('button');
+
+    // Nom personnalisé ou fallback
+    btn.textContent = videoNames[i - 1] || `Vidéo ${i}`;
+
+    // Aperçu au survol
+    btn.addEventListener('mouseenter', () => {
+      previewVideo.src = `${i}.mkv`;
+      previewVideo.play();
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      previewVideo.pause();
+      previewVideo.src = '';
+    });
+
+    // Plein écran au clic
+    btn.onclick = () => {
+      const overlay = document.createElement('div');
+      overlay.className = 'fullscreen-overlay';
+
+      const video = document.createElement('video');
+      video.src = `${i}.mkv`;
+      video.controls = true;
+      video.autoplay = true;
+
+      overlay.appendChild(video);
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', () => overlay.remove());
+    };
+
+    buttonsContainer.appendChild(btn);
+  }
+</script>
+<a href="photo.html">
+  <button>PHOTO</button>
+</a>
+</body>
+</html>
+
+
+
+
